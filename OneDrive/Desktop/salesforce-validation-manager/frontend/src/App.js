@@ -1,0 +1,132 @@
+import { useState } from 'react';
+import axios from 'axios';
+
+function App() {
+
+  const [rules, setRules] = useState([]);
+
+  const login = () => {
+    window.location.href =
+      'https://salesforce-validation-manager-backend.onrender.com/auth/salesforce';
+  };
+
+  const getRules = async () => {
+
+    try {
+
+      const response = await axios.get(
+        'https://salesforce-validation-manager-backend.onrender.com/validation-rules'
+      );
+
+      setRules(response.data);
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  };
+
+  const toggleRule = (id) => {
+
+    const updatedRules = rules.map((rule) => {
+
+      if (rule.Id === id) {
+
+        return {
+          ...rule,
+          Active: !rule.Active
+        };
+      }
+
+      return rule;
+    });
+
+    setRules(updatedRules);
+  };
+
+  return (
+
+    <div className="container mt-5">
+
+      <h1 className="mb-4 text-center">
+        Salesforce Validation Rule Manager
+      </h1>
+
+      <div className="mb-3">
+
+        <button
+          className="btn btn-primary me-3"
+          onClick={login}
+        >
+          Login with Salesforce
+        </button>
+
+        <button
+          className="btn btn-success"
+          onClick={getRules}
+        >
+          Get Validation Rules
+        </button>
+
+      </div>
+
+      <table className="table table-bordered table-hover">
+
+        <thead className="table-dark">
+
+          <tr>
+            <th>Validation Rule</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {rules.map((rule) => (
+
+            <tr key={rule.Id}>
+
+              <td>{rule.ValidationName}</td>
+
+              <td>
+
+                {rule.Active ? (
+                  <span className="text-success">
+                    Active
+                  </span>
+                ) : (
+                  <span className="text-danger">
+                    Inactive
+                  </span>
+                )}
+
+              </td>
+
+              <td>
+
+                <button
+                  className="btn btn-warning btn-sm"
+                  onClick={() => toggleRule(rule.Id)}
+                >
+
+                  {rule.Active ? 'Disable' : 'Enable'}
+
+                </button>
+
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+  );
+}
+
+export default App;
