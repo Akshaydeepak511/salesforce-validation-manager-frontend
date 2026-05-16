@@ -6,9 +6,12 @@ function App() {
   const [rules, setRules] = useState([]);
   const [username, setUsername] = useState('');
 
+  const BACKEND_URL =
+    'https://salesforce-validation-manager-backend.onrender.com';
+
   const login = () => {
     window.location.href =
-      'https://salesforce-validation-manager-backend.onrender.com/auth/salesforce';
+      `${BACKEND_URL}/auth/salesforce`;
   };
 
   const getUserInfo = async () => {
@@ -16,7 +19,7 @@ function App() {
     try {
 
       const response = await axios.get(
-        'https://salesforce-validation-manager-backend.onrender.com/user-info'
+        `${BACKEND_URL}/user-info`
       );
 
       setUsername(response.data.username);
@@ -32,7 +35,7 @@ function App() {
     try {
 
       const response = await axios.get(
-        'https://salesforce-validation-manager-backend.onrender.com/validation-rules'
+        `${BACKEND_URL}/validation-rules`
       );
 
       setRules(response.data);
@@ -43,22 +46,27 @@ function App() {
     }
   };
 
-  const toggleRule = (id) => {
+  const toggleRule = async (rule) => {
 
-    const updatedRules = rules.map((rule) => {
+    try {
 
-      if (rule.Id === id) {
+      const fullName =
+        `${rule.EntityDefinition.QualifiedApiName}.${rule.ValidationName}`;
 
-        return {
-          ...rule,
-          Active: !rule.Active
-        };
-      }
+      await axios.post(
+        `${BACKEND_URL}/toggle-validation-rule`,
+        {
+          fullName: fullName,
+          active: !rule.Active
+        }
+      );
 
-      return rule;
-    });
+      getRules();
 
-    setRules(updatedRules);
+    } catch (error) {
+
+      console.log(error);
+    }
   };
 
   return (
@@ -98,7 +106,8 @@ function App() {
 
         <div className="alert alert-success">
 
-          Logged in as: <strong>{username}</strong>
+          Logged in as:
+          <strong> {username}</strong>
 
         </div>
 
@@ -142,7 +151,7 @@ function App() {
 
                 <button
                   className="btn btn-warning btn-sm"
-                  onClick={() => toggleRule(rule.Id)}
+                  onClick={() => toggleRule(rule)}
                 >
 
                   {rule.Active ? 'Disable' : 'Enable'}
