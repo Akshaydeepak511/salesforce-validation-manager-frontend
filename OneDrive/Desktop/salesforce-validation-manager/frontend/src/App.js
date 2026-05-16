@@ -4,10 +4,27 @@ import axios from 'axios';
 function App() {
 
   const [rules, setRules] = useState([]);
+  const [username, setUsername] = useState('');
 
   const login = () => {
     window.location.href =
       'https://salesforce-validation-manager-backend.onrender.com/auth/salesforce';
+  };
+
+  const getUserInfo = async () => {
+
+    try {
+
+      const response = await axios.get(
+        'https://salesforce-validation-manager-backend.onrender.com/user-info'
+      );
+
+      setUsername(response.data.username);
+
+    } catch (error) {
+
+      console.log(error);
+    }
   };
 
   const getRules = async () => {
@@ -62,6 +79,13 @@ function App() {
         </button>
 
         <button
+          className="btn btn-info me-3"
+          onClick={getUserInfo}
+        >
+          Get User Info
+        </button>
+
+        <button
           className="btn btn-success"
           onClick={getRules}
         >
@@ -69,6 +93,16 @@ function App() {
         </button>
 
       </div>
+
+      {username && (
+
+        <div className="alert alert-success">
+
+          Logged in as: <strong>{username}</strong>
+
+        </div>
+
+      )}
 
       <table className="table table-bordered table-hover">
 
