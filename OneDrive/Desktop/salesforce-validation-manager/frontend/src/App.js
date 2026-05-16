@@ -10,6 +10,7 @@ function App() {
     'https://salesforce-validation-manager-backend.onrender.com';
 
   const login = () => {
+
     window.location.href =
       `${BACKEND_URL}/auth/salesforce`;
   };
@@ -19,7 +20,10 @@ function App() {
     try {
 
       const response = await axios.get(
-        `${BACKEND_URL}/user-info`
+        `${BACKEND_URL}/user-info`,
+        {
+          withCredentials: true
+        }
       );
 
       setUsername(response.data.username);
@@ -35,7 +39,10 @@ function App() {
     try {
 
       const response = await axios.get(
-        `${BACKEND_URL}/validation-rules`
+        `${BACKEND_URL}/validation-rules`,
+        {
+          withCredentials: true
+        }
       );
 
       setRules(response.data);
@@ -58,6 +65,9 @@ function App() {
         {
           fullName: fullName,
           active: !rule.Active
+        },
+        {
+          withCredentials: true
         }
       );
 
