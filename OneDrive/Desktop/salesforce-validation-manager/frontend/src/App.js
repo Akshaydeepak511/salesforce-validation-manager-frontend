@@ -20,10 +20,7 @@ function App() {
     try {
 
       const response = await axios.get(
-        `${BACKEND_URL}/user-info`,
-        {
-          withCredentials: true
-        }
+        `${BACKEND_URL}/user-info`
       );
 
       setUsername(response.data.username);
@@ -39,10 +36,7 @@ function App() {
     try {
 
       const response = await axios.get(
-        `${BACKEND_URL}/validation-rules`,
-        {
-          withCredentials: true
-        }
+        `${BACKEND_URL}/validation-rules`
       );
 
       setRules(response.data);
@@ -65,9 +59,6 @@ function App() {
         {
           fullName: fullName,
           active: !rule.Active
-        },
-        {
-          withCredentials: true
         }
       );
 
